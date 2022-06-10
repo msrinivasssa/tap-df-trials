@@ -1,0 +1,24 @@
+---
+apiVersion: carto.run/v1alpha1
+kind: ClusterSupplyChain
+metadata:
+  name: tap-upgrade-supply-chain
+spec:
+  selector:
+    workload-intent: tap-custom-sc
+  resources:
+    - name: source-provider
+      params:
+      - name: gitImplementation
+        value: go-git
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: tap-update-source-template
+
+    - name: source-tester
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: tap-upgrade-test-pipeline
+      sources:
+      - resource: source-provider
+        name: source

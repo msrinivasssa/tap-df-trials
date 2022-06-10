@@ -1,10 +1,11 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: target-project
+  name: tap-upgrade
   labels:
-    apps.tanzu.vmware.com/workload-type: web
-    app.kubernetes.io/part-of: target-project
+    app.kubernetes.io/component: "test"
+    app.kubernetes.io/part-of: tap-upgrade
+    workload-intent: tap-custom-sc
 spec:
   source:
     git:

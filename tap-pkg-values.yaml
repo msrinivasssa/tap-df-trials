@@ -1,0 +1,84 @@
+ceip_policy_disclosed: true
+profile: full
+buildservice:
+  tanzunet_username: msrinivasssa@vmware.com
+  tanzunet_password: 'VMware1!'
+  kp_default_repository:  cloudfocusedreg.azurecr.io/tap-integration-repo/msrinivasssa/build-service
+  kp_default_repository_username: cloudfocusedreg
+  kp_default_repository_password: x=eEYOib8EN=fIGyGlakeBVe9ydyruSF
+  enable_automatic_dependency_updates: true
+learningcenter:
+  ingressDomain: educates.integration.cloudfocused.in
+tap_gui:
+  ingressDomain: integration.cloudfocused.in
+  ingressEnabled: true
+  service_type: ClusterIP
+  namespace: tap-gui
+  app_config:
+    integrations:
+      github:
+        - host: github.com
+          token: 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
+    app:
+      title: "TAP Beta 4"
+      baseUrl: http://tap-gui.integration.cloudfocused.in
+    backend:
+      baseUrl: http://tap-gui.integration.cloudfocused.in
+      cors:
+        origin: http://tap-gui.integration.cloudfocused.in
+    catalog:
+      locations:
+        - type: url
+          target: https://github.com/msrinivasssa/tap-catalog/blob/master/catalog-info.yaml
+supply_chain: basic
+ootb_supply_chain_basic:
+  cluster_builder: default
+  registry:
+    server:  cloudfocusedreg.azurecr.io
+    repository: tap-integration-repo/msrinivasssa/apps
+  gitops:
+    ssh_secret: git-ssh
+ootb_supply_chain_testing:
+  cluster_builder: function
+  registry:
+    server:  cloudfocusedreg.azurecr.io
+    repository: tap-integration-repo/msrinivasssa/apps
+  gitops:
+    ssh_secret: ""
+  service_account: default
+ootb_supply_chain_testing_scanning:
+  cluster_builder: function
+  registry:
+    server:  cloudfocusedreg.azurecr.io
+    repository: tap-integration-repo/msrinivasssa/apps
+  gitops:
+    ssh_secret: ""
+  service_account: default
+contour:
+  infrastructure_provider: vsphere
+  namespace: tanzu-system-ingress
+  envoy:
+    service:
+      type: LoadBalancer
+cnrs:
+  domain_name: apps.integration.cloudfocused.in
+  ingress:
+    internal:
+      namespace: ""
+grype:
+  namespace: my-apps
+  targetImagePullSecret: registry-credentials
+accelerator:
+  ingress:
+    include: true
+  domain: integration.cloudfocused.in
+  tls:
+    namespace: tap-secrets
+    secretName: tls
+api_portal:
+  apiPortalServer:
+    sourceUrls: https://petstore.swagger.io/v2/swagger.json,https://petstore3.swagger.io/api/v3/openapi.json,https://swaggerportal.blob.core.windows.net/apiportal/k8s-swagger.json
+metadata_store:
+  ingress_enabled: "true"
+  ingress_domain: integration.cloudfocused.in
+  app_service_type: ClusterIP

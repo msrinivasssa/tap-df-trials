@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ci-pod
+  namespace: default
+spec:
+  containers:
+  - name: step-test
+    command:
+    - /bin/bash
+    stdin: true
+    image: projects.registry.vmware.com/tanzu_adv_eng/ubuntu-carvel-image:05
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+      - name: tap-install-values
+        mountPath: /go/tap_install_secret
+  volumes:
+    - name: tap-install-values
+      secret:
+        secretName: tap-pkg-tap-install-values
+    

@@ -1,0 +1,5 @@
+tap_version: "1.2.0-build.10"
+tap_repo_url: "registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.2.0-build.10"
+tap_pkg_install_name: "tap-pkg"
+tap_install_namespace: "tap-install"
+tap_install_values_filename: "tap-pkg-values.yaml"
