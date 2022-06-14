@@ -1,4 +1,4 @@
-# pythontrials
+# TAP DogFooding Trial
 
 ***Pre-req***
 
