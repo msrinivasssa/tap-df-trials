@@ -25,10 +25,8 @@ spec:
             image: projects.registry.vmware.com/tanzu_adv_eng/ubuntu-carvel-image:05
             script: |-
               apt-get update
-              apt-get install python3-pip -y
-              pip install kubernetes
               cd `mktemp -d`
               wget -qO- $(params.source-url) | tar xvz
-              python3 podlist.py
+              go run setup.go
 
 
