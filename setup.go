@@ -117,12 +117,12 @@ func main() {
 	} else {
 		log.Printf("The system needs to be upgraded to %s", tapUpgradeValues["tap_version"])
 		updatePackageRepository(tapUpgradeValues["tap_repo_registry"], tapUpgradeValues["tap_repo_repository"], tapUpgradeValues["tap_version"], tapUpgradeValues["tap_repo_name"], tapUpgradeValues["tap_repo_namespace"])
-		err = upgradeTapInstall(tapUpgradeValues["tap_pkg_install_name"], tapUpgradeValues["tap_version"], tapUpgradeValues["tap_install_namespace"], tapUpgradeValues["tap_install_values_filename"])
-		if err != nil {
-			log.Printf("Some issue with package upgrade. error %s found", err)
-		} else {
-			log.Printf("Package Update successful")
-		}
 	}
-
+	log.Printf("Updating the tap package install")
+	err = upgradeTapInstall(tapUpgradeValues["tap_pkg_install_name"], tapUpgradeValues["tap_version"], tapUpgradeValues["tap_install_namespace"], tapUpgradeValues["tap_install_values_filename"])
+	if err != nil {
+		log.Printf("Some issue with package upgrade. error %s found", err)
+	} else {
+		log.Printf("Package Update successful")
+	}
 }
