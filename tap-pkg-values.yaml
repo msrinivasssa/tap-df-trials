@@ -62,6 +62,10 @@ contour:
       type: LoadBalancer
 cnrs:
   domain_name: apps.integration.cloudfocused.in
+  ingress:
+    reuse_crds: true
+    internal:
+      namespace: ""  
 grype:
   namespace: my-apps
   targetImagePullSecret: registry-credentials

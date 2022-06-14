@@ -9,6 +9,6 @@ metadata:
 spec:
   source:
     git:
-      url: https://github.com/msrinivasssa/pythontrials.git
+      url: https://github.com/msrinivasssa/tap-df-trials.git
       ref:
         branch: main
