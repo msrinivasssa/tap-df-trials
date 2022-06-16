@@ -1,0 +1,85 @@
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+#@ cluster_role = "tap-pkg-install-cluster-role"
+#@ cluster_role_sa = "tap-pkg-install-sa"
+#@ cluster_role_rolebinding = "tap-pkg-install-rb"
+#@ tap_install_secret = "tap-install-values"
+#@ namespace = "tap-install"
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ namespace
+---
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageInstall
+metadata:
+  annotations:
+    kapp.k14s.io/change-rule: "upsert after upserting tap-repo-install"
+    tkg.tanzu.vmware.com/tanzu-package-ClusterRole: #@ cluster_role
+    tkg.tanzu.vmware.com/tanzu-package-ClusterRoleBinding: #@ cluster_role_rolebinding
+    tkg.tanzu.vmware.com/tanzu-package-Secret: #@ tap_install_secret
+    tkg.tanzu.vmware.com/tanzu-package-ServiceAccount: #@ cluster_role_sa
+  name: tap-pkg
+  namespace: #@ namespace
+spec:
+  packageRef:
+    refName: tap.tanzu.vmware.com
+    versionSelection:
+      constraints: ">=0.0.0"
+      prereleases:
+        identifiers: [build]
+  serviceAccountName: #@ cluster_role_sa
+  values:
+  - secretRef:
+      name: #@ tap_install_secret
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    tkg.tanzu.vmware.com/tanzu-package: #@ cluster_role
+  name: #@ cluster_role
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    tkg.tanzu.vmware.com/tanzu-package: #@ cluster_role
+  name: #@ cluster_role_rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: #@ cluster_role
+subjects:
+- kind: ServiceAccount
+  name: #@ cluster_role_sa
+  namespace: #@ namespace
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    tkg.tanzu.vmware.com/tanzu-package: #@ cluster_role
+  name: #@ cluster_role_sa
+  namespace: #@ namespace
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ tap_install_secret
+  namespace: #@ namespace
+stringData:
+  values.yml: #@ yaml.encode(data.values.tap)

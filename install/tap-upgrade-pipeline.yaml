@@ -10,7 +10,7 @@ spec:
     - name: source-url                        # (!) required
     - name: source-revision                   # (!) required
   tasks:
-    - name: test
+    - name: tap-upgrade
       params:
         - name: source-url
           value: $(params.source-url)

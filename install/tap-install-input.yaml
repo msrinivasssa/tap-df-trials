@@ -1,0 +1,27 @@
+#@data/values
+
+#@overlay/match-child-defaults missing_ok=True
+---
+tap:
+  namespace:
+    secret: tap-secrets
+    app: my-apps
+  credentials:
+    tanzunet:
+      name: tanzunet-creds
+      host: registry.tanzu.vmware.com
+      username: TANZUNET_USERNAME
+      password: TANZUNET_PASSWORD
+    registry:
+      name: acr-creds
+      host: cloudfocusedreg.azurecr.io
+      username: REGISTRY_USERNAME
+      password: REGISTRY_PASSWORD
+      repositories:
+        buildservice: df/buildservice
+        supply_chain: df/supplychains
+    github:
+      token: GITHUB_TOKEN
+  catalogs:
+    - https://github.com/msrinivasssa/tap-catalog/blob/master/catalog-info.yaml
+  domain_name: integration.cloudfocused.in

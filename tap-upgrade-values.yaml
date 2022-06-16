@@ -1,3 +1,8 @@
+#@data/values
+
+#@overlay/match-child-defaults missing_ok=True
+---
+
 tap_version: "1.2.0-build.11"
 tap_repo_registry: "registry.tanzu.vmware.com"
 tap_repo_repository: "tanzu-application-platform/tap-packages"
@@ -5,4 +10,4 @@ tap_repo_namespace: "tanzu-package-repo-global"
 tap_install_namespace: "tap-install"
 tap_repo_name: "tanzu-tap-repo"
 tap_pkg_install_name: "tap-pkg"
-tap_install_values_filename: "tap-pkg-values.yaml"
+tap_install_values_filename: "./install/tap-pkg-values.yaml"

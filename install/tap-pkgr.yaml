@@ -1,0 +1,18 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+items:
+- apiVersion: packaging.carvel.dev/v1alpha1
+  kind: PackageRepository
+  metadata:
+    name: #@ data.values.tap_version
+    namespace: #@ data.values.tap_repo_namespace
+    annotations:
+      kapp.k14s.io/change-group: tap-repo-install
+      kapp.k14s.io/change-rule: "upsert after upserting registry-secret"
+
+  spec:
+    fetch:
+      imgpkgBundle:
+        image: #@ "{}/{}:{}".format(data.values.tap_repo_registry, data.values.tap_repo_repository, data.values.tap_version)

@@ -1,0 +1,105 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+---
+#@ def install_values():
+ceip_policy_disclosed: true
+profile: full
+buildservice:
+  tanzunet_secret:
+    namespace: #@ data.values.tap.namespace.secret
+    name: #@ data.values.tap.credentials.tanzunet.name
+  kp_default_repository:  #@ "{}/{}".format(data.values.tap.credentials.registry.host, data.values.tap.credentials.registry.repositories.buildservice)
+  kp_default_repository_secret:
+    namespace: #@ data.values.tap.namespace.secret
+    name:  #@ data.values.tap.credentials.registry.name
+  enable_automatic_dependency_updates: true
+learningcenter:
+  ingressDomain: #@ "educates.{}".format(data.values.tap.domain_name)
+tap_gui:
+  ingressDomain: #@ data.values.tap.domain_name
+  ingressEnabled: true
+  service_type: ClusterIP
+  namespace: tap-gui
+  app_config:
+    integrations:
+      #@ if "github" in data.values.tap.credentials and "token" in data.values.tap.credentials.github:
+      github:
+        - host: github.com
+          token: #@ data.values.tap.credentials.github.token
+      #@ end
+    app:
+      title: "TAP Beta 4"
+      baseUrl: #@ "http://tap-gui.{}".format(data.values.tap.domain_name)
+    backend:
+      baseUrl: #@ "http://tap-gui.{}".format(data.values.tap.domain_name)
+      cors:
+        origin: #@ "http://tap-gui.{}".format(data.values.tap.domain_name)
+    catalog:
+      locations:
+      #@ for catalog in data.values.tap.catalogs:
+        - type: url
+          target: #@ catalog
+      #@ end
+supply_chain: basic
+ootb_supply_chain_basic:
+  cluster_builder: default
+  registry:
+    server:  #@ data.values.tap.credentials.registry.host
+    repository: #@ data.values.tap.credentials.registry.repositories.supply_chain
+  gitops:
+    ssh_secret: git-ssh
+ootb_supply_chain_testing:
+  cluster_builder: function
+  registry:
+    server:  #@ data.values.tap.credentials.registry.host
+    repository: #@ data.values.tap.credentials.registry.repositories.supply_chain
+  gitops:
+    ssh_secret: ""
+  service_account: default
+ootb_supply_chain_testing_scanning:
+  cluster_builder: function
+  registry:
+    server:  #@ data.values.tap.credentials.registry.host
+    repository: #@ data.values.tap.credentials.registry.repositories.supply_chain
+  gitops:
+    ssh_secret: ""
+  service_account: default
+contour:
+  infrastructure_provider: vsphere
+  namespace: tanzu-system-ingress
+  envoy:
+    service:
+      type: LoadBalancer
+cnrs:
+  domain_name: #@ 'apps.' + data.values.tap.domain_name
+  ingress:
+    reuse_crds: true
+    internal:
+      namespace: ""  
+grype:
+  namespace: #@ data.values.tap.namespace.app
+  targetImagePullSecret: registry-credentials
+accelerator:
+  ingress:
+    include: true
+  domain: #@ data.values.tap.domain_name
+  tls:
+    namespace: tap-secrets
+    secretName: tls
+api_portal:
+  apiPortalServer:
+    sourceUrls: https://petstore.swagger.io/v2/swagger.json,https://petstore3.swagger.io/api/v3/openapi.json,https://swaggerportal.blob.core.windows.net/apiportal/k8s-swagger.json
+metadata_store:
+  ingress_enabled: "true"
+  ingress_domain: #@ data.values.tap.domain_name
+  app_service_type: ClusterIP
+#@ end
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: trial-secret
+  namespace: default
+stringData:
+  values.yml: #@ yaml.encode(install_values())
